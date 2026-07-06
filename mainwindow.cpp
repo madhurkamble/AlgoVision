@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QDebug>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -8,6 +10,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     scene = new QGraphicsScene(this);
+    timer = new QTimer(this);
+    connect(timer,
+            &QTimer::timeout,
+            this,
+            &MainWindow::bubbleSortStep);
 
     ui->graphicsView->setScene(scene);
 
@@ -74,6 +81,42 @@ void MainWindow::on_generateButton_clicked()
 {
     generateArray();
     drawArray(2,5);
+}
+
+void MainWindow::on_startButton_clicked()
+{
+    i = 0;
+    j = 0;
+
+    sorting = true;
+
+    timer->start(250);
+}
+
+void MainWindow::bubbleSortStep()
+{
+    if (i >= array.size() - 1)
+    {
+        timer->stop();
+        return;
+    }
+
+    if (j >= array.size() - i - 1)
+    {
+        j = 0;
+        drawArray();
+        i++;
+        return;
+    }
+
+    if (array[j] > array[j + 1])
+    {
+        std::swap(array[j], array[j + 1]);
+    }
+
+    drawArray(j, j + 1);
+
+    j++;
 }
 
 MainWindow::~MainWindow()

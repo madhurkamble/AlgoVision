@@ -296,7 +296,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pauseButton">
+      <widget class="QPushButton" name="startButton">
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -314,7 +314,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="resetButton">
+      <widget class="QPushButton" name="pauseButton">
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -332,7 +332,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="startButton">
+      <widget class="QPushButton" name="resetButton">
        <property name="minimumSize">
         <size>
          <width>0</width>

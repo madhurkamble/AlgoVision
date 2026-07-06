@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <vector>
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -21,8 +22,16 @@ public:
 
 private slots:
     void on_generateButton_clicked();
+    void on_startButton_clicked();
+    void bubbleSortStep();
 
 private:
+    QTimer *timer;
+
+    int i = 0;
+    int j = 0;
+
+    bool sorting = false;
     Ui::MainWindow *ui;
 
     QGraphicsScene *scene;
