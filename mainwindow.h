@@ -23,6 +23,7 @@ public:
 private slots:
     void on_generateButton_clicked();
     void on_startButton_clicked();
+    void on_pauseButton_clicked();
     void bubbleSortStep();
 
 private:
@@ -32,6 +33,8 @@ private:
     int j = 0;
 
     bool sorting = false;
+    int comparisons = 0;
+    int swaps = 0;
     Ui::MainWindow *ui;
 
     QGraphicsScene *scene;

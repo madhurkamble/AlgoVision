@@ -7,8 +7,9 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
 
+    ui->setupUi(this);
+    resize(1400, 950);
     scene = new QGraphicsScene(this);
     timer = new QTimer(this);
     connect(timer,
@@ -66,6 +67,9 @@ void MainWindow::drawArray(int current, int compare)
         else if(i == compare)
             color = Qt::yellow;
 
+        else if(i >= array.size() - this->i)
+            color=Qt::green;
+
         scene->addRect(
             i * barWidth,
             sceneHeight - array[i],
@@ -81,6 +85,11 @@ void MainWindow::on_generateButton_clicked()
 {
     generateArray();
     drawArray(2,5);
+    comparisons = 0;
+    swaps = 0;
+
+    ui->comparisonLabel->setText("Comparisons : 0");
+    ui->swapLabel->setText("Swaps : 0");
 }
 
 void MainWindow::on_startButton_clicked()
@@ -91,6 +100,20 @@ void MainWindow::on_startButton_clicked()
     sorting = true;
 
     timer->start(250);
+}
+
+void MainWindow::on_pauseButton_clicked()
+{
+    if(timer->isActive())
+    {
+        timer->stop();
+        ui->pauseButton->setText("Resume");
+    }
+    else
+    {
+        timer->start(40);
+        ui->pauseButton->setText("Pause");
+    }
 }
 
 void MainWindow::bubbleSortStep()
@@ -109,9 +132,20 @@ void MainWindow::bubbleSortStep()
         return;
     }
 
+    comparisons++;
+
+    ui->comparisonLabel->setText(
+        "Comparisons : " + QString::number(comparisons));
+
     if (array[j] > array[j + 1])
     {
-        std::swap(array[j], array[j + 1]);
+        swaps++;
+
+        ui->swapLabel->setText(
+            "Swaps : " + QString::number(swaps));
+
+        std::swap(array[j],array[j+1]);
+
     }
 
     drawArray(j, j + 1);
