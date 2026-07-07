@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QDebug>
 #include <QMessageBox>
+#include <algorithm>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -9,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
 
     ui->setupUi(this);
-    resize(1400, 950);
+    showMaximized();
     scene = new QGraphicsScene(this);
     timer = new QTimer(this);
     connect(timer,
@@ -21,7 +22,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->graphicsView->setRenderHint(QPainter::Antialiasing);
 
-    ui->graphicsView->setSceneRect(0,0,1000,450);
+    scene->setSceneRect(0, 0,
+                        ui->graphicsView->width(),
+                        ui->graphicsView->height());
+
+    ui->graphicsView->setScene(scene);
 }
 
 #include <cstdlib>
@@ -43,12 +48,15 @@ void MainWindow::generateArray()
     drawArray();
 }
 
+
 void MainWindow::drawArray(int current, int compare)
 {
     scene->clear();
 
-    int sceneWidth = ui->graphicsView->viewport()->width();
-    int sceneHeight = ui->graphicsView->viewport()->height();
+    QRectF rect = scene->sceneRect();
+
+    int sceneWidth = rect.width();
+    int sceneHeight = rect.height();
 
     int n = array.size();
 
@@ -70,11 +78,15 @@ void MainWindow::drawArray(int current, int compare)
         else if(i >= array.size() - this->i)
             color=Qt::green;
 
+        int maxValue = *std::max_element(array.begin(), array.end());
+
+        int barHeight = (array[i] * sceneHeight) / maxValue;
+
         scene->addRect(
             i * barWidth,
-            sceneHeight - array[i],
+            sceneHeight - barHeight,
             barWidth - 4,
-            array[i],
+            barHeight,
             QPen(Qt::white),
             QBrush(color)
             );
@@ -84,7 +96,7 @@ void MainWindow::drawArray(int current, int compare)
 void MainWindow::on_generateButton_clicked()
 {
     generateArray();
-    drawArray(2,5);
+    drawArray();
     comparisons = 0;
     swaps = 0;
 
@@ -99,7 +111,7 @@ void MainWindow::on_startButton_clicked()
 
     sorting = true;
 
-    timer->start(250);
+    timer->start(ui->speedSlider->value());
 }
 
 void MainWindow::on_pauseButton_clicked()

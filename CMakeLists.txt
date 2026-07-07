@@ -11,6 +11,8 @@ qt_add_executable(AlgoVision
     mainwindow.cpp
     mainwindow.h
     mainwindow.ui
+
+
 )
 
 qt_add_translations(
