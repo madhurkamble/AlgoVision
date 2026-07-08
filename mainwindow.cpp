@@ -10,13 +10,21 @@ MainWindow::MainWindow(QWidget *parent)
 {
 
     ui->setupUi(this);
+    ui->pauseButton->setEnabled(false);
+    connect(ui->speedSlider, &QSlider::valueChanged, this, [=](int value)
+            {
+                animationDelay = 510 - (value * 5);
+
+        if (timer->isActive())
+            timer->start(animationDelay);
+            });
     showMaximized();
     scene = new QGraphicsScene(this);
     timer = new QTimer(this);
     connect(timer,
             &QTimer::timeout,
             this,
-            &MainWindow::bubbleSortStep);
+            &MainWindow::sortStep);
 
     ui->graphicsView->setScene(scene);
 
@@ -108,10 +116,18 @@ void MainWindow::on_startButton_clicked()
 {
     i = 0;
     j = 0;
+    minIndex=0;
+    resetStatistics();
 
+    currentAlgorithm = ui->algorithmComboBox->currentText();
     sorting = true;
+    ui->pauseButton->setEnabled(true);
 
-    timer->start(ui->speedSlider->value());
+    elapsedTimer.restart();
+
+    disableControls();
+
+    timer->start(animationDelay);
 }
 
 void MainWindow::on_pauseButton_clicked()
@@ -123,7 +139,7 @@ void MainWindow::on_pauseButton_clicked()
     }
     else
     {
-        timer->start(40);
+        timer->start(animationDelay);
         ui->pauseButton->setText("Pause");
     }
 }
@@ -132,7 +148,8 @@ void MainWindow::bubbleSortStep()
 {
     if (i >= array.size() - 1)
     {
-        timer->stop();
+        finishSorting();
+
         return;
     }
 
@@ -165,7 +182,136 @@ void MainWindow::bubbleSortStep()
     j++;
 }
 
+void MainWindow::on_resetButton_clicked()
+{
+    timer->stop();
+
+    sorting = false;
+
+    i = 0;
+    j = 0;
+
+    resetStatistics();
+
+    ui->pauseButton->setText("Pause");
+
+    ui->pauseButton->setText("Pause");
+
+    ui->pauseButton->setEnabled(false);
+
+    generateArray();
+    drawArray();
+
+    enableControls();
+}
+
+
+void MainWindow::sortStep()
+{
+    if(currentAlgorithm == "Bubble Sort")
+    {
+        bubbleSortStep();
+    }
+    else if(currentAlgorithm == "Selection Sort")
+    {
+        selectionSortStep();
+    }
+}
+
+void MainWindow::selectionSortStep()
+{
+    if (i >= array.size() - 1)
+    {
+        finishSorting();
+
+        return;
+    }
+
+    if (j == 0)
+    {
+        minIndex = i;
+        j = i + 1;
+    }
+
+    if (j < array.size())
+    {
+        comparisons++;
+
+        ui->comparisonLabel->setText(
+            "Comparisons : " + QString::number(comparisons));
+
+        if (array[j] < array[minIndex])
+        {
+            minIndex = j;
+        }
+
+        drawArray(minIndex, j);
+
+        j++;
+    }
+    else
+    {
+        if (minIndex != i)
+        {
+            swaps++;
+
+            ui->swapLabel->setText(
+                "Swaps : " + QString::number(swaps));
+
+            std::swap(array[i], array[minIndex]);
+        }
+
+        drawArray();
+
+        i++;
+        j = 0;
+    }
+}
+
+void MainWindow::resetStatistics()
+{
+    comparisons = 0;
+    swaps = 0;
+
+    ui->comparisonLabel->setText("Comparisons : 0");
+    ui->swapLabel->setText("Swaps : 0");
+    ui->timeLabel->setText("Time : 0 ms");
+}
+
+void MainWindow::disableControls()
+{
+    ui->startButton->setEnabled(false);
+    ui->generateButton->setEnabled(false);
+    ui->arraySizeSpinBox->setEnabled(false);
+    ui->algorithmComboBox->setEnabled(false);
+    ui->pauseButton->setEnabled(true);
+}
+
+void MainWindow::enableControls()
+{
+    ui->startButton->setEnabled(true);
+    ui->generateButton->setEnabled(true);
+    ui->arraySizeSpinBox->setEnabled(true);
+    ui->algorithmComboBox->setEnabled(true);
+    ui->pauseButton->setEnabled(false);
+}
+
+void MainWindow::finishSorting()
+{
+    timer->stop();
+
+    sorting = false;
+
+    ui->timeLabel->setText(
+        "Time : " +
+        QString::number(elapsedTimer.elapsed()) +
+        " ms");
+
+    enableControls();
+}
+
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+

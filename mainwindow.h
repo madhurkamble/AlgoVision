@@ -5,6 +5,7 @@
 #include <QGraphicsScene>
 #include <vector>
 #include <QTimer>
+#include <QElapsedTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -25,12 +26,18 @@ private slots:
     void on_startButton_clicked();
     void on_pauseButton_clicked();
     void bubbleSortStep();
+    void on_resetButton_clicked();
+    void sortStep();
+    void selectionSortStep();
 
 private:
     QTimer *timer;
-
+    int animationDelay = 40;
+    QElapsedTimer elapsedTimer;
+    QString currentAlgorithm = "Bubble Sort";
     int i = 0;
     int j = 0;
+    int minIndex = 0;
 
     bool sorting = false;
     int comparisons = 0;
@@ -42,6 +49,11 @@ private:
 
     void generateArray();
     void drawArray(int current = -1, int compare = -1);
+
+    void finishSorting();
+    void resetStatistics();
+    void disableControls();
+    void enableControls();
 };
 
 #endif

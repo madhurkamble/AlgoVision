@@ -13,6 +13,7 @@ qt_add_executable(AlgoVision
     mainwindow.ui
 
 
+
 )
 
 qt_add_translations(
