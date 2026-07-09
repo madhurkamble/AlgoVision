@@ -83,8 +83,11 @@ void MainWindow::drawArray(int current, int compare)
         else if(i == compare)
             color = Qt::yellow;
 
+        else if(sortingFinished)
+            color = Qt::green;
+
         else if(i >= array.size() - this->i)
-            color=Qt::green;
+            color = Qt::green;
 
         int maxValue = *std::max_element(array.begin(), array.end());
 
@@ -114,12 +117,38 @@ void MainWindow::on_generateButton_clicked()
 
 void MainWindow::on_startButton_clicked()
 {
+    currentAlgorithm = ui->algorithmComboBox->currentText();
+    sortingFinished = false;
+    if(currentAlgorithm == "Insertion Sort")
+    {
+        i = 1;
+    }
+
+    else
+    {
+        i = 0;
+    }
+
+    if(currentAlgorithm == "Merge Sort")
+    {
+        animationSteps.clear();
+        currentAnimationStep = 0;
+
+        workingArray = array;
+
+        mergeSort(0, workingArray.size() - 1);
+    }
+
+    j = 0;
+    minIndex = 0;
+    keyValue = 0;
+    insertionStarted = false;
     i = 0;
     j = 0;
     minIndex=0;
+    keyValue = 0;
     resetStatistics();
 
-    currentAlgorithm = ui->algorithmComboBox->currentText();
     sorting = true;
     ui->pauseButton->setEnabled(true);
 
@@ -187,6 +216,7 @@ void MainWindow::on_resetButton_clicked()
     timer->stop();
 
     sorting = false;
+    sortingFinished = false;
 
     i = 0;
     j = 0;
@@ -215,6 +245,14 @@ void MainWindow::sortStep()
     else if(currentAlgorithm == "Selection Sort")
     {
         selectionSortStep();
+    }
+    else if(currentAlgorithm == "Insertion Sort")
+    {
+        insertionSortStep();
+    }
+    else if(currentAlgorithm == "Merge Sort")
+    {
+        mergeSortStep();
     }
 }
 
@@ -301,6 +339,8 @@ void MainWindow::finishSorting()
     timer->stop();
 
     sorting = false;
+    sortingFinished = true;
+    drawArray();
 
     ui->timeLabel->setText(
         "Time : " +
@@ -308,6 +348,175 @@ void MainWindow::finishSorting()
         " ms");
 
     enableControls();
+}
+
+void MainWindow::insertionSortStep()
+{
+    if (i >= array.size())
+    {
+        finishSorting();
+        return;
+    }
+
+    if (!insertionStarted)
+    {
+        keyValue = array[i];
+        j = i - 1;
+        insertionStarted = true;
+    }
+
+    if (j >= 0)
+    {
+        comparisons++;
+
+        ui->comparisonLabel->setText(
+            "Comparisons : " + QString::number(comparisons));
+
+        if (array[j] > keyValue)
+        {
+            swaps++;
+
+            ui->swapLabel->setText(
+                "Swaps : " + QString::number(swaps));
+
+            array[j + 1] = array[j];
+
+            drawArray(j, j + 1);
+
+            j--;
+
+            return;
+        }
+    }
+
+    array[j + 1] = keyValue;
+
+    drawArray(j + 1);
+
+    i++;
+    insertionStarted = false;
+    if (i >= array.size())
+    {
+        drawArray();      // redraw with all bars green
+        finishSorting();
+        return;
+    }
+}
+
+void MainWindow::mergeSort(int left, int right)
+{
+    if (left >= right)
+        return;
+
+    int mid = left + (right - left) / 2;
+
+    mergeSort(left, mid);
+    mergeSort(mid + 1, right);
+
+    merge(left, mid, right);
+}
+
+void MainWindow::merge(int left, int mid, int right)
+{
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    std::vector<int> leftArray(n1);
+    std::vector<int> rightArray(n2);
+
+    for (int i = 0; i < n1; i++)
+        leftArray[i] = workingArray[left + i];
+
+    for (int j = 0; j < n2; j++)
+        rightArray[j] = workingArray[mid + 1 + j];
+
+    int i = 0;
+    int j = 0;
+    int k = left;
+
+    while (i < n1 && j < n2)
+    {
+        animationSteps.push_back(
+            {AnimationStep::Compare, left + i, mid + 1 + j, 0});
+
+        if (leftArray[i] <= rightArray[j])
+        {
+            workingArray[k] = leftArray[i];
+
+            animationSteps.push_back(
+                {AnimationStep::Write, k, -1, leftArray[i]});
+
+            i++;
+        }
+        else
+        {
+            workingArray[k] = rightArray[j];
+
+            animationSteps.push_back(
+                {AnimationStep::Write, k, -1, rightArray[j]});
+
+            j++;
+        }
+
+        k++;
+    }
+
+    while (i < n1)
+    {
+        workingArray[k] = leftArray[i];
+
+        animationSteps.push_back(
+            {AnimationStep::Write, k, -1, leftArray[i]});
+
+        i++;
+        k++;
+    }
+
+    while (j < n2)
+    {
+        workingArray[k] = rightArray[j];
+
+        animationSteps.push_back(
+            {AnimationStep::Write, k, -1, rightArray[j]});
+
+        j++;
+        k++;
+    }
+}
+
+void MainWindow::mergeSortStep()
+{
+    if (currentAnimationStep >= animationSteps.size())
+    {
+        drawArray();
+        finishSorting();
+        return;
+    }
+
+    AnimationStep step = animationSteps[currentAnimationStep];
+
+    if (step.type == AnimationStep::Compare)
+    {
+        comparisons++;
+
+        ui->comparisonLabel->setText(
+            "Comparisons : " + QString::number(comparisons));
+
+        drawArray(step.index1, step.index2);
+    }
+    else if (step.type == AnimationStep::Write)
+    {
+        swaps++;
+
+        ui->swapLabel->setText(
+            "Swaps : " + QString::number(swaps));
+
+        array[step.index1] = step.value;
+
+        drawArray(step.index1);
+    }
+
+    currentAnimationStep++;
 }
 
 MainWindow::~MainWindow()

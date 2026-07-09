@@ -29,6 +29,8 @@ private slots:
     void on_resetButton_clicked();
     void sortStep();
     void selectionSortStep();
+    void insertionSortStep();
+    void mergeSortStep();
 
 private:
     QTimer *timer;
@@ -38,11 +40,29 @@ private:
     int i = 0;
     int j = 0;
     int minIndex = 0;
-
+    int keyValue = 0;
+    bool insertionStarted = false;
     bool sorting = false;
     int comparisons = 0;
     int swaps = 0;
+    bool sortingFinished = false;
     Ui::MainWindow *ui;
+    std::vector<int> workingArray;
+    struct AnimationStep
+    {
+        enum Type
+        {
+            Compare,
+            Write
+        };
+
+        Type type;
+        int index1;
+        int index2;
+        int value;
+    };
+    std::vector<AnimationStep> animationSteps;
+    int currentAnimationStep = 0;
 
     QGraphicsScene *scene;
     std::vector<int> array;
@@ -54,6 +74,9 @@ private:
     void resetStatistics();
     void disableControls();
     void enableControls();
+    void mergeSort(int left, int right);
+    void merge(int left, int mid, int right);
+
 };
 
 #endif
