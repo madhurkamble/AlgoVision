@@ -111,6 +111,9 @@
          <kerning>false</kerning>
         </font>
        </property>
+       <property name="editable">
+        <bool>false</bool>
+       </property>
        <item>
         <property name="text">
          <string>Bubble Sort</string>
@@ -134,6 +137,11 @@
        <item>
         <property name="text">
          <string>Merge Sort</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Heap Sort</string>
         </property>
        </item>
       </widget>
@@ -355,7 +363,7 @@
     <property name="geometry">
      <rect>
       <x>150</x>
-      <y>690</y>
+      <y>680</y>
       <width>891</width>
       <height>121</height>
      </rect>
@@ -402,7 +410,7 @@
        </property>
       </widget>
      </item>
-     <item alignment="Qt::AlignmentFlag::AlignVCenter">
+     <item>
       <widget class="QLabel" name="timeLabel">
        <property name="font">
         <font>
@@ -438,6 +446,120 @@
     <property name="horizontalScrollBarPolicy">
      <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
     </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>800</y>
+      <width>891</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Times New Roman</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="title">
+     <string>Algorithm Details :</string>
+    </property>
+    <widget class="QLabel" name="algorithmNameLabel">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>151</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Times New Roman</family>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Algorithm:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="bestCaseLabel">
+     <property name="geometry">
+      <rect>
+       <x>200</x>
+       <y>30</y>
+       <width>101</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Times New Roman</family>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Best:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="averageCaseLabel">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>29</y>
+       <width>81</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Times New Roman</family>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Average :</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="worstCaseLabel">
+     <property name="geometry">
+      <rect>
+       <x>490</x>
+       <y>30</y>
+       <width>81</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Times New Roman</family>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Worst :</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="spaceComplexityLabel">
+     <property name="geometry">
+      <rect>
+       <x>650</x>
+       <y>29</y>
+       <width>63</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Times New Roman</family>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Space :</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

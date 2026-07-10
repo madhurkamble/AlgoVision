@@ -139,6 +139,26 @@ void MainWindow::on_startButton_clicked()
         mergeSort(0, workingArray.size() - 1);
     }
 
+    if(currentAlgorithm == "Quick Sort")
+    {
+        animationSteps.clear();
+        currentAnimationStep = 0;
+
+        workingArray = array;
+
+        quickSort(0, workingArray.size() - 1);
+    }
+
+    if(currentAlgorithm == "Heap Sort")
+    {
+        animationSteps.clear();
+        currentAnimationStep = 0;
+
+        workingArray = array;
+
+        heapSort();
+    }
+
     j = 0;
     minIndex = 0;
     keyValue = 0;
@@ -175,6 +195,12 @@ void MainWindow::on_pauseButton_clicked()
 
 void MainWindow::bubbleSortStep()
 {
+
+    ui->timeLabel->setText(
+        "Time : " +
+        QString::number(elapsedTimer.elapsed()) +
+        " ms");
+
     if (i >= array.size() - 1)
     {
         finishSorting();
@@ -254,10 +280,23 @@ void MainWindow::sortStep()
     {
         mergeSortStep();
     }
+    else if(currentAlgorithm == "Quick Sort")
+    {
+        quickSortStep();
+    }
+    else if(currentAlgorithm == "Heap Sort")
+    {
+        heapSortStep();
+    }
 }
 
 void MainWindow::selectionSortStep()
 {
+
+    ui->timeLabel->setText(
+        "Time : " +
+        QString::number(elapsedTimer.elapsed()) +
+        " ms");
     if (i >= array.size() - 1)
     {
         finishSorting();
@@ -352,6 +391,11 @@ void MainWindow::finishSorting()
 
 void MainWindow::insertionSortStep()
 {
+
+    ui->timeLabel->setText(
+        "Time : " +
+        QString::number(elapsedTimer.elapsed()) +
+        " ms");
     if (i >= array.size())
     {
         finishSorting();
@@ -397,7 +441,7 @@ void MainWindow::insertionSortStep()
     insertionStarted = false;
     if (i >= array.size())
     {
-        drawArray();      // redraw with all bars green
+        drawArray();
         finishSorting();
         return;
     }
@@ -486,6 +530,68 @@ void MainWindow::merge(int left, int mid, int right)
 
 void MainWindow::mergeSortStep()
 {
+    playAnimationStep();
+}
+
+void MainWindow::quickSort(int low, int high)
+{
+    if (low < high)
+    {
+        int pivotIndex = partition(low, high);
+
+        quickSort(low, pivotIndex - 1);
+        quickSort(pivotIndex + 1, high);
+    }
+}
+
+int MainWindow::partition(int low, int high)
+{
+    int pivot = workingArray[high];
+    int i = low - 1;
+
+    for (int j = low; j < high; j++)
+    {
+        animationSteps.push_back(
+            {AnimationStep::Compare, j, high, 0});
+
+        if (workingArray[j] < pivot)
+        {
+            i++;
+
+            std::swap(workingArray[i], workingArray[j]);
+
+            animationSteps.push_back(
+                {AnimationStep::Write, i, -1, workingArray[i]});
+
+            animationSteps.push_back(
+                {AnimationStep::Write, j, -1, workingArray[j]});
+        }
+    }
+
+    std::swap(workingArray[i + 1], workingArray[high]);
+
+    animationSteps.push_back(
+        {AnimationStep::Write, i + 1, -1, workingArray[i + 1]});
+
+    animationSteps.push_back(
+        {AnimationStep::Write, high, -1, workingArray[high]});
+
+    return i + 1;
+}
+
+void MainWindow::quickSortStep()
+{
+    playAnimationStep();
+}
+
+void MainWindow::playAnimationStep()
+{
+
+    ui->timeLabel->setText(
+        "Time : " +
+        QString::number(elapsedTimer.elapsed()) +
+        " ms");
+
     if (currentAnimationStep >= animationSteps.size())
     {
         drawArray();
@@ -517,6 +623,72 @@ void MainWindow::mergeSortStep()
     }
 
     currentAnimationStep++;
+}
+
+void MainWindow::heapify(int n, int i)
+{
+    int largest = i;
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
+
+    if(left < n)
+    {
+        animationSteps.push_back(
+            {AnimationStep::Compare, left, largest, 0});
+
+        if(workingArray[left] > workingArray[largest])
+            largest = left;
+    }
+
+    if(right < n)
+    {
+        animationSteps.push_back(
+            {AnimationStep::Compare, right, largest, 0});
+
+        if(workingArray[right] > workingArray[largest])
+            largest = right;
+    }
+
+    if(largest != i)
+    {
+        std::swap(workingArray[i], workingArray[largest]);
+
+        animationSteps.push_back(
+            {AnimationStep::Write, i, -1, workingArray[i]});
+
+        animationSteps.push_back(
+            {AnimationStep::Write, largest, -1, workingArray[largest]});
+
+        heapify(n, largest);
+    }
+}
+
+void MainWindow::heapSort()
+{
+    int n = workingArray.size();
+
+    for(int i = n / 2 - 1; i >= 0; i--)
+    {
+        heapify(n, i);
+    }
+
+    for(int i = n - 1; i > 0; i--)
+    {
+        std::swap(workingArray[0], workingArray[i]);
+
+        animationSteps.push_back(
+            {AnimationStep::Write, 0, -1, workingArray[0]});
+
+        animationSteps.push_back(
+            {AnimationStep::Write, i, -1, workingArray[i]});
+
+        heapify(i, 0);
+    }
+}
+
+void MainWindow::heapSortStep()
+{
+    playAnimationStep();
 }
 
 MainWindow::~MainWindow()

@@ -31,6 +31,10 @@ private slots:
     void selectionSortStep();
     void insertionSortStep();
     void mergeSortStep();
+    void quickSortStep();
+    void quickSort(int low, int high);
+    int partition(int low, int high);
+    void heapSortStep();
 
 private:
     QTimer *timer;
@@ -76,6 +80,10 @@ private:
     void enableControls();
     void mergeSort(int left, int right);
     void merge(int left, int mid, int right);
+    void playAnimationStep();
+    void heapSort();
+    void heapify(int n, int i);
+    void updateComplexityLabels();
 
 };
 
