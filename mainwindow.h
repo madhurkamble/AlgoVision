@@ -84,6 +84,7 @@ private:
     void heapSort();
     void heapify(int n, int i);
     void updateComplexityLabels();
+    void updateDescription();
 
 };
 

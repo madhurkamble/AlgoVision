@@ -4,37 +4,62 @@
 #include <QMessageBox>
 #include <algorithm>
 
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-
     ui->setupUi(this);
-    ui->pauseButton->setEnabled(false);
-    connect(ui->speedSlider, &QSlider::valueChanged, this, [=](int value)
-            {
-                animationDelay = 510 - (value * 5);
 
-        if (timer->isActive())
-            timer->start(animationDelay);
-            });
-    showMaximized();
+    // Update Complexity Tab
+    connect(ui->algorithmComboBox,
+            &QComboBox::currentTextChanged,
+            this,
+            &MainWindow::updateComplexityLabels);
+    connect(ui->algorithmComboBox,
+            &QComboBox::currentTextChanged,
+            this,
+            &MainWindow::updateDescription);
+
+    ui->pauseButton->setEnabled(false);
+
     scene = new QGraphicsScene(this);
+
     timer = new QTimer(this);
+
     connect(timer,
             &QTimer::timeout,
             this,
             &MainWindow::sortStep);
 
-    ui->graphicsView->setScene(scene);
+    connect(ui->speedSlider,
+            &QSlider::valueChanged,
+            this,
+            [=](int value)
+            {
+                animationDelay = 510 - (value * 5);
 
+                if(timer->isActive())
+                    timer->start(animationDelay);
+            });
+
+    showMaximized();
+
+    ui->graphicsView->setScene(scene);
     ui->graphicsView->setRenderHint(QPainter::Antialiasing);
 
-    scene->setSceneRect(0, 0,
-                        ui->graphicsView->width(),
-                        ui->graphicsView->height());
+    scene->setSceneRect(
+        0,
+        0,
+        ui->graphicsView->width(),
+        ui->graphicsView->height());
 
     ui->graphicsView->setScene(scene);
+
+    updateComplexityLabels();
+    updateDescription();
+
+    statusBar()->showMessage("Ready");
 }
 
 #include <cstdlib>
@@ -108,6 +133,7 @@ void MainWindow::on_generateButton_clicked()
 {
     generateArray();
     drawArray();
+    statusBar()->showMessage("New random array generated.");
     comparisons = 0;
     swaps = 0;
 
@@ -118,6 +144,7 @@ void MainWindow::on_generateButton_clicked()
 void MainWindow::on_startButton_clicked()
 {
     currentAlgorithm = ui->algorithmComboBox->currentText();
+    statusBar()->showMessage("Sorting using " + currentAlgorithm + "...");
     sortingFinished = false;
     if(currentAlgorithm == "Insertion Sort")
     {
@@ -353,6 +380,7 @@ void MainWindow::resetStatistics()
     ui->comparisonLabel->setText("Comparisons : 0");
     ui->swapLabel->setText("Swaps : 0");
     ui->timeLabel->setText("Time : 0 ms");
+    statusBar()->showMessage("Array reset.");
 }
 
 void MainWindow::disableControls()
@@ -386,6 +414,7 @@ void MainWindow::finishSorting()
         QString::number(elapsedTimer.elapsed()) +
         " ms");
 
+    statusBar()->showMessage(currentAlgorithm + " completed successfully.");
     enableControls();
 }
 
@@ -691,6 +720,117 @@ void MainWindow::heapSortStep()
     playAnimationStep();
 }
 
+void MainWindow::updateDescription()
+{
+    QString algo = ui->algorithmComboBox->currentText();
+
+    if(algo == "Bubble Sort")
+    {
+        ui->descriptionLabel->setText(
+            "Bubble Sort repeatedly compares adjacent elements "
+            "and swaps them if they are in the wrong order until "
+            "the array becomes sorted.");
+    }
+
+    else if(algo == "Selection Sort")
+    {
+        ui->descriptionLabel->setText(
+            "Selection Sort repeatedly finds the minimum element "
+            "from the unsorted portion and places it at the "
+            "beginning of the array.");
+    }
+
+    else if(algo == "Insertion Sort")
+    {
+        ui->descriptionLabel->setText(
+            "Insertion Sort builds the sorted array one element "
+            "at a time by inserting each element into its correct "
+            "position.");
+    }
+
+    else if(algo == "Merge Sort")
+    {
+        ui->descriptionLabel->setText(
+            "Merge Sort follows the divide-and-conquer approach. "
+            "It recursively divides the array into smaller parts "
+            "and merges them back in sorted order.");
+    }
+
+    else if(algo == "Quick Sort")
+    {
+        ui->descriptionLabel->setText(
+            "Quick Sort selects a pivot element, partitions the "
+            "array around the pivot, and recursively sorts the "
+            "resulting subarrays.");
+    }
+
+    else if(algo == "Heap Sort")
+    {
+        ui->descriptionLabel->setText(
+            "Heap Sort builds a max heap from the array and "
+            "repeatedly moves the largest element to its correct "
+            "position until the array is sorted.");
+    }
+}
+
+void MainWindow::updateComplexityLabels()
+{
+    QString algo = ui->algorithmComboBox->currentText();
+
+    if(algo == "Bubble Sort")
+    {
+        ui->algorithmNameLabel->setText("Algorithm : Bubble Sort");
+        ui->bestCaseLabel->setText("Best : O(n)");
+        ui->averageCaseLabel->setText("Average : O(n²)");
+        ui->worstCaseLabel->setText("Worst : O(n²)");
+        ui->spaceComplexityLabel->setText("Space : O(1)");
+    }
+
+    else if(algo == "Selection Sort")
+    {
+        ui->algorithmNameLabel->setText("Algorithm : Selection Sort");
+        ui->bestCaseLabel->setText("Best : O(n²)");
+        ui->averageCaseLabel->setText("Average : O(n²)");
+        ui->worstCaseLabel->setText("Worst : O(n²)");
+        ui->spaceComplexityLabel->setText("Space : O(1)");
+    }
+
+    else if(algo == "Insertion Sort")
+    {
+        ui->algorithmNameLabel->setText("Algorithm : Insertion Sort");
+        ui->bestCaseLabel->setText("Best : O(n)");
+        ui->averageCaseLabel->setText("Average : O(n²)");
+        ui->worstCaseLabel->setText("Worst : O(n²)");
+        ui->spaceComplexityLabel->setText("Space : O(1)");
+    }
+
+    else if(algo == "Merge Sort")
+    {
+        ui->algorithmNameLabel->setText("Algorithm : Merge Sort");
+        ui->bestCaseLabel->setText("Best : O(n log n)");
+        ui->averageCaseLabel->setText("Average : O(n log n)");
+        ui->worstCaseLabel->setText("Worst : O(n log n)");
+        ui->spaceComplexityLabel->setText("Space : O(n)");
+    }
+
+    else if(algo == "Quick Sort")
+    {
+        ui->algorithmNameLabel->setText("Algorithm : Quick Sort");
+        ui->bestCaseLabel->setText("Best : O(n log n)");
+        ui->averageCaseLabel->setText("Average : O(n log n)");
+        ui->worstCaseLabel->setText("Worst : O(n²)");
+        ui->spaceComplexityLabel->setText("Space : O(log n)");
+    }
+
+    else if(algo == "Heap Sort")
+    {
+        ui->algorithmNameLabel->setText("Algorithm : Heap Sort");
+        ui->bestCaseLabel->setText("Best : O(n log n)");
+        ui->averageCaseLabel->setText("Average : O(n log n)");
+        ui->worstCaseLabel->setText("Worst : O(n log n)");
+        ui->spaceComplexityLabel->setText("Space : O(1)");
+    }
+}
 MainWindow::~MainWindow()
 {
     delete ui;
