@@ -10,8 +10,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-    // Update Complexity Tab
+    setWindowTitle("AlgoVision - Sorting Algorithm Visualizer");
+    setMinimumSize(1200, 700);
     connect(ui->algorithmComboBox,
             &QComboBox::currentTextChanged,
             this,
@@ -88,15 +88,15 @@ void MainWindow::drawArray(int current, int compare)
 
     QRectF rect = scene->sceneRect();
 
-    int sceneWidth = rect.width();
-    int sceneHeight = rect.height();
+    double sceneWidth = rect.width();
+    double sceneHeight = rect.height();
 
     int n = array.size();
 
     if(n == 0)
         return;
 
-    int barWidth = sceneWidth / n;
+    double barWidth = sceneWidth / n;
 
     for(int i = 0; i < n; i++)
     {
@@ -118,14 +118,15 @@ void MainWindow::drawArray(int current, int compare)
 
         int barHeight = (array[i] * sceneHeight) / maxValue;
 
+        double gap = (n > 80) ? 1 : 2;
         scene->addRect(
             i * barWidth,
             sceneHeight - barHeight,
-            barWidth - 4,
+            barWidth - gap,
             barHeight,
             QPen(Qt::white),
             QBrush(color)
-            );
+        );
     }
 }
 
