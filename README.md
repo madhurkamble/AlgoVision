@@ -42,43 +42,65 @@ AlgoVision is a desktop application developed using **C++ and Qt Framework** tha
 
 ---
 
-## 📸 Screenshots
+# 📸 Screenshots
 
-### 🏠 Home Screen (Random Array)
+## 🏠 Home Page
 
-![Uploading HomePage_RandomArray.png…]()
+![Home Page](Screenshots/HomePage_RandomArray.png)
 
-### Bubble Sort
+---
 
-![Uploading Bubble_Sort.png…]()
+## 🫧 Bubble Sort
 
-### Selection Sort
+![Bubble Sort](Screenshots/Bubble_Sort.png)
 
-![Uploading Selection_Sort.png…]()
+---
 
-### Insertion Sort
+## 🎯 Selection Sort
 
-![Uploading Insertion_Sort.png…]()
+![Selection Sort](Screenshots/Selection_Sort.png)
 
-### Merge Sort
+---
 
-![Uploading Merge_Sort.png…]()
+## 📥 Insertion Sort
 
-### Quick Sort
+![Insertion Sort](Screenshots/Insertion_Sort.png)
 
-![Uploading Quick_Sort.png…]()
+---
 
-### Heap Sort
+## 🔀 Merge Sort
 
-![Uploading Heap_Sort.png…]()
+![Merge Sort](Screenshots/Merge_Sort.png)
 
-### Statistics,Complexity and About Panels
+---
 
-![Uploading Statistics_Panel.png…]()
+## ⚡ Quick Sort
 
-![Uploading Complexity_Panel.png…]()
+![Quick Sort](Screenshots/Quick_Sort.png)
 
-![Uploading About_Panel.png…]()
+---
+
+## 🌳 Heap Sort
+
+![Heap Sort](Screenshots/Heap_Sort.png)
+
+---
+
+## 📊 Statistics Panel
+
+![Statistics Panel](Screenshots/Statistics_Panel.png)
+
+---
+
+## 📈 Complexity Panel
+
+![Complexity Panel](Screenshots/Complexity_Panel.png)
+
+---
+
+## 📖 About Panel
+
+![About Panel](Screenshots/About_Panel.png)
 
 
 ---
