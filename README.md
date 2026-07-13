@@ -44,6 +44,10 @@ AlgoVision is a desktop application developed using **C++ and Qt Framework** tha
 
 ## 📸 Screenshots
 
+### 🏠 Home Screen (Random Array)
+
+![Uploading HomePage_RandomArray.png…]()
+
 ### Bubble Sort
 
 ![Uploading Bubble_Sort.png…]()
@@ -67,6 +71,15 @@ AlgoVision is a desktop application developed using **C++ and Qt Framework** tha
 ### Heap Sort
 
 ![Uploading Heap_Sort.png…]()
+
+### Statistics,Complexity and About Panels
+
+![Uploading Statistics_Panel.png…]()
+
+![Uploading Complexity_Panel.png…]()
+
+![Uploading About_Panel.png…]()
+
 
 ---
 
